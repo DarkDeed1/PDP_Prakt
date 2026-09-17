@@ -11,7 +11,7 @@ py -3.9 -m venv .venv
 py -m pip install --upgrade pip; py -m pip install -r requirements.txt
 
 5. Создайте базу данных:
-cmd /c 'mysql -admin -admin -e "DROP DATABASE IF EXISTS arvi_crm; CREATE DATABASE arvi_crm CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;'
+cmd /c "mysql -u admin -padmin -e \"DROP DATABASE IF EXISTS arvi_crm; CREATE DATABASE arvi_crm CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;\""
 
 6. Выполните миграции:
 py manage.py migrate
