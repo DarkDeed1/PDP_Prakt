@@ -3,6 +3,10 @@ from django.urls import include, path
 
 from crm.views import CRMLoginView, logout_view
 
+admin.site.site_header = 'АС «Клиенты и сделки» — ЧОУВО «МУ им. С.Ю. Витте»'
+admin.site.site_title = 'Администрирование АС «Клиенты и сделки»'
+admin.site.index_title = 'Панель администрирования'
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('login/', CRMLoginView.as_view(), name='login'),
