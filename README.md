@@ -29,3 +29,43 @@
 - управление пользователями и ролями;
 - фильтры во всех списках;
 - demo SQL-дамп с предметными данными.
+
+## Структура проекта
+```
+config/          — настройки Django (settings, urls, wsgi/asgi)
+crm/             — основное приложение (модели, представления, формы, шаблоны)
+database/        — демонстрационный SQL-дамп
+docs/            — руководства по запуску
+static/          — статические файлы (CSS)
+templates/       — шаблоны входа и системных страниц
+manage.py        — точка входа Django
+requirements.txt — зависимости проекта
+```
+
+## Установка и запуск
+1. Создайте виртуальное окружение и установите зависимости:
+   ```
+   py -m venv .venv
+   .\.venv\Scripts\Activate.ps1
+   py -m pip install -r requirements.txt
+   ```
+2. Создайте базу данных `arvi_crm` (см. `docs/` — там готовые команды для PowerShell).
+3. Примените миграции и загрузите демоданные:
+   ```
+   py manage.py migrate
+   cmd /c "mysql -u admin -padmin arvi_crm < .\database\demo_data.sql"
+   ```
+4. Запустите сервер и откройте `http://localhost:8000`:
+   ```
+   py manage.py runserver 0.0.0.0:8000
+   ```
+
+## Настройка через переменные окружения
+Параметры подключения к БД и прочие секреты можно переопределить через переменные окружения (значения по умолчанию приведены в `config/settings.py`):
+- `DB_NAME`, `DB_USER`, `DB_PASSWORD`, `DB_HOST`, `DB_PORT`;
+- `DJANGO_SECRET_KEY`, `DJANGO_DEBUG`, `DJANGO_ALLOWED_HOSTS`.
+
+## Тесты
+```
+py manage.py test crm
+```
