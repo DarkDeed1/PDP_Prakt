@@ -16,10 +16,10 @@ INSERT INTO auth_group (id, name) VALUES
 (3, 'Руководитель');
 
 INSERT INTO auth_user (id, password, last_login, is_superuser, username, first_name, last_name, email, is_staff, is_active, date_joined) VALUES
-(1, 'pbkdf2_sha256$720000$salt1crm$BVxdtJFX7jdDB4bhDHGBovnM8XSed+8GibjOmlujbvM=', NULL, 1, 'admin', 'Илья', 'Соколов', 'admin@arvi.local', 1, 1, '2026-02-01 09:00:00'),
-(2, 'pbkdf2_sha256$720000$salt2crm$+rZ5D77wJV3cTXv0EkmX2EiPUvtIYbi/IZcwg4oLCCw=', NULL, 0, 'manager1', 'Марина', 'Громова', 'manager1@arvi.local', 1, 1, '2026-02-01 09:00:00'),
-(3, 'pbkdf2_sha256$720000$salt3crm$au7aIz6U2DMJEzrQwhwknFXNivpYwgbj7tbAkT/lGCI=', NULL, 0, 'manager2', 'Павел', 'Ветров', 'manager2@arvi.local', 1, 1, '2026-02-01 09:00:00'),
-(4, 'pbkdf2_sha256$720000$salt4crm$fjQX+6b/EOomr+Dcjt995i8jGQTfxlpX95gsMebvsjM=', NULL, 0, 'director', 'Ольга', 'Крылова', 'director@arvi.local', 1, 1, '2026-02-01 09:00:00');
+(1, 'pbkdf2_sha256$720000$salt1crm$BVxdtJFX7jdDB4bhDHGBovnM8XSed+8GibjOmlujbvM=', NULL, 1, 'admin', 'Илья', 'Соколов', 'admin@muwitte.local', 1, 1, '2026-02-01 09:00:00'),
+(2, 'pbkdf2_sha256$720000$salt2crm$+rZ5D77wJV3cTXv0EkmX2EiPUvtIYbi/IZcwg4oLCCw=', NULL, 0, 'manager1', 'Марина', 'Громова', 'manager1@muwitte.local', 1, 1, '2026-02-01 09:00:00'),
+(3, 'pbkdf2_sha256$720000$salt3crm$au7aIz6U2DMJEzrQwhwknFXNivpYwgbj7tbAkT/lGCI=', NULL, 0, 'manager2', 'Павел', 'Ветров', 'manager2@muwitte.local', 1, 1, '2026-02-01 09:00:00'),
+(4, 'pbkdf2_sha256$720000$salt4crm$fjQX+6b/EOomr+Dcjt995i8jGQTfxlpX95gsMebvsjM=', NULL, 0, 'director', 'Ольга', 'Крылова', 'director@muwitte.local', 1, 1, '2026-02-01 09:00:00');
 
 INSERT INTO auth_user_groups (id, user_id, group_id) VALUES
 (1, 1, 1),
