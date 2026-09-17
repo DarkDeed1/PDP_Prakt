@@ -1,0 +1,25 @@
+!1. Перейдите в каталог проекта:
+cd C:\Users\Admin\Desktop\vkr
+
+!2. Создайте виртуальное окружение:
+py -3.9 -m venv .venv
+
+!3. Активируйте окружение:
+.\.venv\Scripts\Activate.ps1
+
+4. Установите зависимости:
+py -m pip install --upgrade pip; py -m pip install -r requirements.txt
+
+5. Создайте базу данных:
+cmd /c 'mysql -admin -admin -e "DROP DATABASE IF EXISTS arvi_crm; CREATE DATABASE arvi_crm CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;'
+
+6. Выполните миграции:
+py manage.py migrate
+
+7. Загрузите демонстрационные данные:
+cmd /c "mysql -u admin -padmin arvi_crm < .\database\demo_data.sql"
+
+!8. Запустите систему:
+py manage.py runserver 0.0.0.0:8000
+
+localhost:8000 - инет

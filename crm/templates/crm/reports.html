@@ -1,0 +1,63 @@
+{% extends 'crm/base.html' %}
+{% block title %}Отчеты{% endblock %}
+{% block page_title %}Сводные отчеты{% endblock %}
+{% block content %}
+<section class="double-table-grid">
+    <div class="panel">
+        <div class="panel-header">Сделки по статусам</div>
+        <div class="table-wrap">
+            <table>
+                <thead><tr><th>Статус</th><th>Количество</th><th>Сумма</th></tr></thead>
+                <tbody>
+                    {% for row in status_summary %}
+                        <tr>
+                            <td>{{ row.label }}</td>
+                            <td>{{ row.total }}</td>
+                            <td>{{ row.amount|default:0|floatformat:2 }} ₽</td>
+                        </tr>
+                    {% empty %}
+                        <tr><td colspan="3">Нет данных.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="panel">
+        <div class="panel-header">Сделки по ответственным</div>
+        <div class="table-wrap">
+            <table>
+                <thead><tr><th>Ответственный</th><th>Количество</th><th>Сумма</th></tr></thead>
+                <tbody>
+                    {% for row in manager_summary %}
+                        <tr>
+                            <td>{{ row.responsible__last_name }} {{ row.responsible__first_name|slice:':1' }}.</td>
+                            <td>{{ row.total }}</td>
+                            <td>{{ row.amount|default:0|floatformat:2 }} ₽</td>
+                        </tr>
+                    {% empty %}
+                        <tr><td colspan="3">Нет данных.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>
+<section class="panel">
+    <div class="panel-header">Контрагенты по типам</div>
+    <div class="table-wrap">
+        <table>
+            <thead><tr><th>Тип</th><th>Количество</th></tr></thead>
+            <tbody>
+                {% for row in type_summary %}
+                    <tr>
+                        <td>{{ row.label }}</td>
+                        <td>{{ row.total }}</td>
+                    </tr>
+                {% empty %}
+                    <tr><td colspan="2">Нет данных.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</section>
+{% endblock %}

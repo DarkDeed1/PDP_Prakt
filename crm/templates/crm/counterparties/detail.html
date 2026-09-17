@@ -1,0 +1,47 @@
+{% extends 'crm/base.html' %}
+{% block title %}{{ object.name }}{% endblock %}
+{% block page_title %}Карточка контрагента{% endblock %}
+{% block content %}
+<section class="detail-grid">
+    <div class="panel">
+        <div class="panel-header">Основные сведения</div>
+        <dl class="details">
+            <dt>Полное наименование</dt><dd>{{ object.name }}</dd>
+            <dt>Краткое наименование</dt><dd>{{ object.short_name|default:'—' }}</dd>
+            <dt>Тип</dt><dd>{{ object.get_counterparty_type_display }}</dd>
+            <dt>ИНН</dt><dd>{{ object.inn }}</dd>
+            <dt>КПП</dt><dd>{{ object.kpp|default:'—' }}</dd>
+            <dt>ОГРН</dt><dd>{{ object.ogrn|default:'—' }}</dd>
+            <dt>Контактное лицо</dt><dd>{{ object.contact_person|default:'—' }}</dd>
+            <dt>Телефон</dt><dd>{{ object.phone|default:'—' }}</dd>
+            <dt>Эл. почта</dt><dd>{{ object.email|default:'—' }}</dd>
+            <dt>Адрес</dt><dd>{{ object.address|default:'—' }}</dd>
+            <dt>Банк</dt><dd>{{ object.bank_name|default:'—' }}</dd>
+            <dt>БИК</dt><dd>{{ object.bik|default:'—' }}</dd>
+            <dt>Расчетный счет</dt><dd>{{ object.checking_account|default:'—' }}</dd>
+            <dt>Корреспондентский счет</dt><dd>{{ object.correspondent_account|default:'—' }}</dd>
+            <dt>Комментарий</dt><dd>{{ object.comment|default:'—' }}</dd>
+        </dl>
+    </div>
+    <div class="panel">
+        <div class="panel-header">Связанные сделки</div>
+        <div class="table-wrap">
+            <table>
+                <thead><tr><th>Сделка</th><th>Статус</th><th>Сумма</th><th>Срок</th></tr></thead>
+                <tbody>
+                    {% for deal in object.deals.all %}
+                        <tr>
+                            <td><a href="{% url 'deal_detail' deal.pk %}">{{ deal.title }}</a></td>
+                            <td>{{ deal.get_status_display }}</td>
+                            <td>{{ deal.amount|floatformat:2 }} ₽</td>
+                            <td>{{ deal.control_date|date:'d.m.Y' }}</td>
+                        </tr>
+                    {% empty %}
+                        <tr><td colspan="4">Связанных сделок нет.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>
+{% endblock %}

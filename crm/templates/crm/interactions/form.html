@@ -1,0 +1,24 @@
+{% extends 'crm/base.html' %}
+{% block title %}Взаимодействие{% endblock %}
+{% block page_title %}{% if object %}Редактирование взаимодействия{% else %}Новое взаимодействие{% endif %}{% endblock %}
+{% block content %}
+<section class="panel">
+    <form method="post" class="form-grid">
+        {% csrf_token %}
+        {% for field in form %}
+            <div class="form-field {% if field.name == 'summary' %}full-width{% endif %}">
+                <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                {{ field }}
+                {% for error in field.errors %}<div class="form-error">{{ error }}</div>{% endfor %}
+            </div>
+        {% endfor %}
+        {% if form.non_field_errors %}
+            <div class="form-error full-width">{{ form.non_field_errors }}</div>
+        {% endif %}
+        <div class="full-width form-actions">
+            <button type="submit" class="btn btn-primary">Сохранить</button>
+            <a href="{% url 'interaction_list' %}" class="btn btn-secondary">Отмена</a>
+        </div>
+    </form>
+</section>
+{% endblock %}

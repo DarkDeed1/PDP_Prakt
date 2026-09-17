@@ -1,0 +1,46 @@
+{% extends 'crm/base.html' %}
+{% block title %}Журнал действий{% endblock %}
+{% block page_title %}Журнал действий{% endblock %}
+{% block content %}
+<div class="section-actions">
+    <form method="get" class="filters-grid wide-filters">
+        <input type="text" name="q" placeholder="Поиск по пользователю, объекту, деталям" value="{{ filters.q|default:'' }}">
+        <select name="action">
+            <option value="">Все действия</option>
+            <option value="create" {% if filters.action == 'create' %}selected{% endif %}>Создание</option>
+            <option value="update" {% if filters.action == 'update' %}selected{% endif %}>Изменение</option>
+            <option value="delete" {% if filters.action == 'delete' %}selected{% endif %}>Удаление</option>
+            <option value="login" {% if filters.action == 'login' %}selected{% endif %}>Вход</option>
+            <option value="logout" {% if filters.action == 'logout' %}selected{% endif %}>Выход</option>
+            <option value="status" {% if filters.action == 'status' %}selected{% endif %}>Смена статуса</option>
+        </select>
+        <input type="text" name="model_name" placeholder="Объект" value="{{ filters.model_name|default:'' }}">
+        <input type="date" name="date_from" value="{{ filters.date_from|default:'' }}">
+        <input type="date" name="date_to" value="{{ filters.date_to|default:'' }}">
+        <button type="submit" class="btn btn-primary">Фильтровать</button>
+        <a class="btn btn-secondary" href="{% url 'audit_list' %}">Сбросить</a>
+    </form>
+</div>
+<div class="panel">
+    <div class="table-wrap">
+        <table>
+            <thead><tr><th>Дата</th><th>Пользователь</th><th>Действие</th><th>Объект</th><th>Детали</th><th>IP</th></tr></thead>
+            <tbody>
+                {% for item in object_list %}
+                    <tr>
+                        <td>{{ item.created_at|date:'d.m.Y H:i' }}</td>
+                        <td>{{ item.user.username|default:'—' }}</td>
+                        <td>{{ item.get_action_display }}</td>
+                        <td>{{ item.object_repr }}</td>
+                        <td>{{ item.details|default:'—' }}</td>
+                        <td>{{ item.ip_address|default:'—' }}</td>
+                    </tr>
+                {% empty %}
+                    <tr><td colspan="6">Записи не найдены.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% include 'crm/pagination.html' %}
+</div>
+{% endblock %}

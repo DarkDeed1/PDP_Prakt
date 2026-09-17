@@ -1,0 +1,143 @@
+{% extends 'crm/base.html' %}
+{% block title %}Дашборд{% endblock %}
+{% block page_title %}Дашборд{% endblock %}
+{% block content %}
+<section class="stats-grid">
+    <div class="stat-card">
+        <span>Контрагенты</span>
+        <strong>{{ total_counterparties }}</strong>
+    </div>
+    <div class="stat-card">
+        <span>Активные сделки</span>
+        <strong>{{ active_deals_count }}</strong>
+    </div>
+    <div class="stat-card">
+        <span>Просроченные сделки</span>
+        <strong>{{ overdue_deals_count }}</strong>
+    </div>
+    <div class="stat-card">
+        <span>Сумма активных сделок</span>
+        <strong>{{ active_amount_mln|default:0|floatformat:2 }} млн ₽</strong>
+    </div>
+</section>
+
+<section class="charts-grid">
+    <div class="panel">
+        <div class="panel-header">Распределение сделок по статусам</div>
+        <div class="donut-layout">
+            <div class="donut" style="background: conic-gradient({{ status_chart }});"></div>
+            <div class="legend">
+                {% for item in status_segments %}
+                    <div class="legend-item">
+                        <span class="legend-color" style="background: {{ item.color }};"></span>
+                        <span>{{ item.label }}</span>
+                        <span class="legend-value">{{ item.value }}</span>
+                    </div>
+                {% empty %}
+                    <div class="muted">Нет данных.</div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    <div class="panel">
+        <div class="panel-header">Структура контрагентов</div>
+        <div class="donut-layout">
+            <div class="donut" style="background: conic-gradient({{ type_chart }});"></div>
+            <div class="legend">
+                {% for item in type_segments %}
+                    <div class="legend-item">
+                        <span class="legend-color" style="background: {{ item.color }};"></span>
+                        <span>{{ item.label }}</span>
+                        <span class="legend-value">{{ item.value }}</span>
+                    </div>
+                {% empty %}
+                    <div class="muted">Нет данных.</div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="panel">
+    <div class="panel-header">Динамика регистрации сделок</div>
+    <div class="bars">
+        {% for item in monthly_data %}
+            <div class="bar-item">
+                <div class="bar" style="height: {{ item.height }}%;"></div>
+                <div class="bar-value">{{ item.value }}</div>
+                <div class="bar-label">{{ item.label }}</div>
+            </div>
+        {% endfor %}
+    </div>
+</section>
+
+<section class="double-table-grid">
+<div class="panel">
+    <div class="panel-header">Ближайшие контрольные даты</div>
+    <div class="table-wrap">
+        <table>
+            <thead>
+                <tr><th>Дата</th><th>Сделка</th><th>Контрагент</th><th>Срок</th></tr>
+            </thead>
+            <tbody>
+                {% for item in nearest_deals %}
+                    <tr>
+                        <td>{{ item.control_date|date:'d.m.Y' }}</td>
+                        <td><a href="{% url 'deal_detail' item.pk %}">{{ item.title }}</a></td>
+                        <td>{{ item.counterparty }}</td>
+                        <td>{{ item.control_date|date:'d.m.Y' }}</td>
+                    </tr>
+                {% empty %}
+                    <tr><td colspan="4">Нет данных.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+<div class="panel">
+    <div class="panel-header" style="color: #7f1d1d;">Просроченные сделки</div>
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr><th>Сделка</th><th>Ответственный</th><th>Срок</th></tr>
+                </thead>
+                <tbody>
+                    {% for item in overdue_deals %}
+                        <tr>
+                            <td><a href="{% url 'deal_detail' item.pk %}">{{ item.title }}</a></td>
+                            <td>{{ item.responsible.get_full_name|default:item.responsible.username }}</td>
+                            <td>{{ item.control_date|date:'d.m.Y' }}</td>
+                        </tr>
+                    {% empty %}
+                        <tr><td colspan="3">Нет просроченных сделок.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>
+
+<section class="panel">
+    <div class="panel-header">Последние взаимодействия</div>
+    <div class="table-wrap">
+        <table>
+            <thead>
+                <tr><th>Дата</th><th>Тема</th><th>Контрагент</th><th>Сделка</th><th>Автор</th></tr>
+            </thead>
+            <tbody>
+                {% for item in recent_interactions %}
+                    <tr>
+                        <td>{{ item.interaction_date|date:'d.m.Y' }}</td>
+                        <td>{{ item.subject }}</td>
+                        <td>{{ item.counterparty }}</td>
+                        <td>{{ item.deal|default:'—' }}</td>
+                        <td>{{ item.created_by.get_full_name|default:item.created_by.username }}</td>
+                    </tr>
+                {% empty %}
+                    <tr><td colspan="5">Нет взаимодействий.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</section>
+{% endblock %}

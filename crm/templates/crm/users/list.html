@@ -1,0 +1,51 @@
+{% extends 'crm/base.html' %}
+{% block title %}Пользователи{% endblock %}
+{% block page_title %}Пользователи{% endblock %}
+{% block content %}
+<div class="section-actions">
+    <form method="get" class="filters-grid">
+        <input type="text" name="q" placeholder="Поиск по логину, ФИО, email" value="{{ filters.q|default:'' }}">
+        <select name="role">
+            <option value="">Все роли</option>
+            {% for role in roles %}
+                <option value="{{ role }}" {% if filters.role == role %}selected{% endif %}>{{ role }}</option>
+            {% endfor %}
+        </select>
+        <select name="active">
+            <option value="">Все записи</option>
+            <option value="yes" {% if filters.active == 'yes' %}selected{% endif %}>Только активные</option>
+            <option value="no" {% if filters.active == 'no' %}selected{% endif %}>Только заблокированные</option>
+        </select>
+        <button type="submit" class="btn btn-primary">Фильтровать</button>
+        <a class="btn btn-secondary" href="{% url 'user_list' %}">Сбросить</a>
+    </form>
+    <a class="btn btn-primary" href="{% url 'user_create' %}">Создать пользователя</a>
+</div>
+<div class="panel">
+    <div class="table-wrap">
+        <table>
+            <thead><tr><th>Логин</th><th>ФИО</th><th>Email</th><th>Роль</th><th>Статус</th><th></th></tr></thead>
+            <tbody>
+                {% for item in object_list %}
+                    <tr>
+                        <td>{{ item.username }}</td>
+                        <td>{{ item.get_full_name|default:'—' }}</td>
+                        <td>{{ item.email|default:'—' }}</td>
+                        <td>{{ item.groups.first.name|default:'—' }}</td>
+                        <td>{% if item.is_active %}Активен{% else %}Заблокирован{% endif %}</td>
+                        <td class="table-actions">
+                            <a href="{% url 'user_update' item.pk %}">Изменить</a>
+                            {% if item != request.user %}
+                                <a href="{% url 'user_toggle' item.pk %}">{% if item.is_active %}Блокировать{% else %}Разблокировать{% endif %}</a>
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% empty %}
+                    <tr><td colspan="6">Пользователи не найдены.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% include 'crm/pagination.html' %}
+</div>
+{% endblock %}

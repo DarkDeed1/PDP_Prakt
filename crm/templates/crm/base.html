@@ -1,0 +1,51 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}CRM{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'crm/css/styles.css' %}">
+</head>
+<body>
+    <div class="app-shell">
+        <aside class="sidebar">
+            <div>
+                <div class="brand">ARVI CRM</div>
+                <div class="brand-subtitle">Клиенты и сделки</div>
+            </div>
+            <nav class="nav-menu">
+                <a href="{% url 'dashboard' %}">Дашборд</a>
+                <a href="{% url 'counterparty_list' %}">Контрагенты</a>
+                <a href="{% url 'deal_list' %}">Сделки</a>
+                <a href="{% url 'interaction_list' %}">Взаимодействия</a>
+                <a href="{% url 'reports' %}">Отчеты</a>
+                {% if nav_role == 'Администратор' %}
+                    <a href="{% url 'user_list' %}">Пользователи</a>
+                    <a href="{% url 'audit_list' %}">Журнал действий</a>
+                {% endif %}
+            </nav>
+        </aside>
+        <div class="content-wrapper">
+            <header class="topbar">
+                <div>
+                    <div class="page-title">{% block page_title %}CRM{% endblock %}</div>
+                    <div class="muted">Роль: {{ nav_role }}</div>
+                </div>
+                <div class="topbar-actions">
+                    <span>{{ request.user.get_full_name|default:request.user.username }}</span>
+                    <a class="btn btn-secondary" href="{% url 'logout' %}">Выйти</a>
+                </div>
+            </header>
+            <main class="page-content">
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="alert {% if message.tags %}alert-{{ message.tags }}{% else %}alert-info{% endif %}">{{ message }}</div>
+                    {% endfor %}
+                {% endif %}
+                {% block content %}{% endblock %}
+            </main>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,59 @@
+{% extends 'crm/base.html' %}
+{% load querystring %}
+{% block title %}Контрагенты{% endblock %}
+{% block page_title %}Контрагенты{% endblock %}
+{% block content %}
+<div class="section-actions">
+    <form method="get" class="filters-grid">
+        <input type="text" name="q" placeholder="Поиск по наименованию, ИНН, контакту" value="{{ filters.q|default:'' }}">
+        <select name="counterparty_type">
+            <option value="">Все типы</option>
+            {% for value, label in counterparty_types %}
+                <option value="{{ value }}" {% if filters.counterparty_type == value %}selected{% endif %}>{{ label }}</option>
+            {% endfor %}
+        </select>
+        <select name="archived">
+            <option value="">Все записи</option>
+            <option value="no" {% if filters.archived == 'no' %}selected{% endif %}>Только активные</option>
+            <option value="yes" {% if filters.archived == 'yes' %}selected{% endif %}>Только архив</option>
+        </select>
+        <button type="submit" class="btn btn-primary">Фильтровать</button>
+        <a class="btn btn-secondary" href="{% url 'counterparty_list' %}">Сбросить</a>
+    </form>
+    {% if nav_role != 'Руководитель' %}
+        <a class="btn btn-primary" href="{% url 'counterparty_create' %}">Добавить контрагента</a>
+    {% endif %}
+</div>
+<div class="panel">
+    <div class="table-wrap">
+        <table>
+            <thead>
+                <tr>
+                    <th>Наименование</th><th>Тип</th><th>ИНН</th><th>Контакт</th><th>Телефон</th><th>Статус</th><th></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in object_list %}
+                    <tr>
+                        <td><a href="{% url 'counterparty_detail' item.pk %}">{{ item.name }}</a></td>
+                        <td>{{ item.get_counterparty_type_display }}</td>
+                        <td>{{ item.inn }}</td>
+                        <td>{{ item.contact_person|default:'—' }}</td>
+                        <td>{{ item.phone|default:'—' }}</td>
+                        <td>{% if item.is_archived %}Архив{% else %}Активен{% endif %}</td>
+                        <td class="table-actions">
+                            {% if nav_role != 'Руководитель' %}
+                                <a href="{% url 'counterparty_update' item.pk %}">Изменить</a>
+                                <a href="{% url 'counterparty_delete' item.pk %}">Удалить</a>
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% empty %}
+                    <tr><td colspan="7">Контрагенты не найдены.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% include 'crm/pagination.html' %}
+</div>
+{% endblock %}

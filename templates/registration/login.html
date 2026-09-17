@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Вход в систему</title>
+    <link rel="stylesheet" href="/static/crm/css/styles.css">
+</head>
+<body class="auth-body">
+    <main class="auth-card">
+        <h1>АС «Клиенты и сделки»</h1>
+        <p class="muted">АО «Арвиай (Рашен Венчур Инвестментс)»</p>
+        {% if form.errors %}
+            <div class="alert alert-danger">Неверное имя пользователя или пароль.</div>
+        {% endif %}
+        <form method="post" class="form-grid single-column">
+            {% csrf_token %}
+            <div>
+                <label for="id_username">Логин</label>
+                {{ form.username }}
+            </div>
+            <div>
+                <label for="id_password">Пароль</label>
+                {{ form.password }}
+            </div>
+            <button type="submit" class="btn btn-primary btn-block">Войти</button>
+        </form>
+        <div class="demo-credentials">
+            <div>admin / admin</div>
+            <div>manager1 / manager1</div>
+            <div>director / director</div>
+        </div>
+    </main>
+</body>
+</html>

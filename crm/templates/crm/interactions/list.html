@@ -1,0 +1,59 @@
+{% extends 'crm/base.html' %}
+{% block title %}Взаимодействия{% endblock %}
+{% block page_title %}Взаимодействия{% endblock %}
+{% block content %}
+<div class="section-actions">
+    <form method="get" class="filters-grid wide-filters">
+        <input type="text" name="q" placeholder="Поиск по теме, описанию, контрагенту" value="{{ filters.q|default:'' }}">
+        <select name="interaction_type">
+            <option value="">Все типы</option>
+            {% for value, label in interaction_types %}
+                <option value="{{ value }}" {% if filters.interaction_type == value %}selected{% endif %}>{{ label }}</option>
+            {% endfor %}
+        </select>
+        <select name="created_by">
+            <option value="">Все авторы</option>
+            {% for user in users %}
+                <option value="{{ user.id }}" {% if filters.created_by == user.id|stringformat:'s' %}selected{% endif %}>{{ user.get_full_name|default:user.username }}</option>
+            {% endfor %}
+        </select>
+        <input type="date" name="date_from" value="{{ filters.date_from|default:'' }}">
+        <input type="date" name="date_to" value="{{ filters.date_to|default:'' }}">
+        <button type="submit" class="btn btn-primary">Фильтровать</button>
+        <a class="btn btn-secondary" href="{% url 'interaction_list' %}">Сбросить</a>
+    </form>
+    {% if nav_role != 'Руководитель' %}
+        <a class="btn btn-primary" href="{% url 'interaction_create' %}">Добавить взаимодействие</a>
+    {% endif %}
+</div>
+<div class="panel">
+    <div class="table-wrap">
+        <table>
+            <thead>
+                <tr><th>Дата</th><th>Тип</th><th>Тема</th><th>Контрагент</th><th>Сделка</th><th>Автор</th><th></th></tr>
+            </thead>
+            <tbody>
+                {% for item in object_list %}
+                    <tr>
+                        <td>{{ item.interaction_date|date:'d.m.Y' }}</td>
+                        <td>{{ item.get_interaction_type_display }}</td>
+                        <td>{{ item.subject }}</td>
+                        <td>{{ item.counterparty }}</td>
+                        <td>{{ item.deal|default:'—' }}</td>
+                        <td>{{ item.created_by.get_full_name|default:item.created_by.username }}</td>
+                        <td class="table-actions">
+                            {% if nav_role != 'Руководитель' %}
+                                <a href="{% url 'interaction_update' item.pk %}">Изменить</a>
+                                <a href="{% url 'interaction_delete' item.pk %}">Удалить</a>
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% empty %}
+                    <tr><td colspan="7">Взаимодействия не найдены.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% include 'crm/pagination.html' %}
+</div>
+{% endblock %}

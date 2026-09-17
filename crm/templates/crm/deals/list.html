@@ -1,0 +1,73 @@
+{% extends 'crm/base.html' %}
+{% block title %}Сделки{% endblock %}
+{% block page_title %}Сделки{% endblock %}
+{% block content %}
+<div class="section-actions">
+    <form method="get" class="filters-grid wide-filters">
+        <input type="text" name="q" placeholder="Поиск по сделке, контрагенту, ответственному" value="{{ filters.q|default:'' }}">
+        <select name="status">
+            <option value="">Все статусы</option>
+            {% for value, label in statuses %}
+                <option value="{{ value }}" {% if filters.status == value %}selected{% endif %}>{{ label }}</option>
+            {% endfor %}
+        </select>
+        <select name="responsible">
+            <option value="">Все ответственные</option>
+            {% for user in responsible_users %}
+                <option value="{{ user.id }}" {% if filters.responsible == user.id|stringformat:'s' %}selected{% endif %}>{{ user.get_full_name|default:user.username }}</option>
+            {% endfor %}
+        </select>
+        <input type="date" name="date_from" value="{{ filters.date_from|default:'' }}">
+        <input type="date" name="date_to" value="{{ filters.date_to|default:'' }}">
+        <input type="number" step="0.01" name="amount_min" placeholder="Сумма от" value="{{ filters.amount_min|default:'' }}">
+        <input type="number" step="0.01" name="amount_max" placeholder="Сумма до" value="{{ filters.amount_max|default:'' }}">
+        <select name="overdue">
+            <option value="">Все</option>
+            <option value="yes" {% if filters.overdue == 'yes' %}selected{% endif %}>Только просроченные</option>
+        </select>
+        <select name="archived">
+            <option value="">Все записи</option>
+            <option value="no" {% if filters.archived == 'no' %}selected{% endif %}>Только активные</option>
+            <option value="yes" {% if filters.archived == 'yes' %}selected{% endif %}>Только архив</option>
+        </select>
+        <button type="submit" class="btn btn-primary">Фильтровать</button>
+        <a class="btn btn-secondary" href="{% url 'deal_list' %}">Сбросить</a>
+    </form>
+    {% if nav_role != 'Руководитель' %}
+        <a class="btn btn-primary" href="{% url 'deal_create' %}">Новая сделка</a>
+    {% endif %}
+</div>
+<div class="panel">
+    <div class="table-wrap">
+        <table>
+            <thead>
+                <tr>
+                    <th>Сделка</th><th>Контрагент</th><th>Статус</th><th>Приоритет</th><th>Сумма</th><th>Срок</th><th>Ответственный</th><th></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in object_list %}
+                    <tr>
+                        <td><a href="{% url 'deal_detail' item.pk %}">{{ item.title }}</a></td>
+                        <td>{{ item.counterparty }}</td>
+                        <td>{{ item.get_status_display }}</td>
+                        <td>{{ item.get_priority_display }}</td>
+                        <td>{{ item.amount|floatformat:2 }} ₽</td>
+                        <td>{% if item.is_overdue %}<span class="badge badge-danger">{{ item.control_date|date:'d.m.Y' }}</span>{% else %}{{ item.control_date|date:'d.m.Y' }}{% endif %}</td>
+                        <td>{{ item.responsible.get_full_name|default:item.responsible.username }}</td>
+                        <td class="table-actions">
+                            {% if nav_role != 'Руководитель' %}
+                                <a href="{% url 'deal_update' item.pk %}">Изменить</a>
+                                <a href="{% url 'deal_delete' item.pk %}">Удалить</a>
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% empty %}
+                    <tr><td colspan="8">Сделки не найдены.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% include 'crm/pagination.html' %}
+</div>
+{% endblock %}

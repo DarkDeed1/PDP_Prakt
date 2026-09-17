@@ -1,0 +1,59 @@
+{% extends 'crm/base.html' %}
+{% block title %}{{ object.title }}{% endblock %}
+{% block page_title %}Карточка сделки{% endblock %}
+{% block content %}
+<section class="detail-grid">
+    <div class="panel">
+        <div class="panel-header">Параметры сделки</div>
+        <dl class="details">
+            <dt>Наименование</dt><dd>{{ object.title }}</dd>
+            <dt>Контрагент</dt><dd><a href="{% url 'counterparty_detail' object.counterparty.pk %}">{{ object.counterparty }}</a></dd>
+            <dt>Статус</dt><dd>{{ object.get_status_display }}</dd>
+            <dt>Приоритет</dt><dd>{{ object.get_priority_display }}</dd>
+            <dt>Сумма</dt><dd>{{ object.amount|floatformat:2 }} ₽</dd>
+            <dt>Контрольная дата</dt><dd>{{ object.control_date|date:'d.m.Y' }}</dd>
+            <dt>Дата закрытия</dt><dd>{{ object.close_date|date:'d.m.Y'|default:'—' }}</dd>
+            <dt>Ответственный</dt><dd>{{ object.responsible.get_full_name|default:object.responsible.username }}</dd>
+            <dt>Условия</dt><dd>{{ object.conditions|default:'—' }}</dd>
+            <dt>Примечания</dt><dd>{{ object.notes|default:'—' }}</dd>
+        </dl>
+    </div>
+    <div class="panel">
+        <div class="panel-header">История статусов</div>
+        <div class="timeline">
+            {% for item in object.status_history.all %}
+                <div class="timeline-item">
+                    <div class="timeline-date">{{ item.changed_at|date:'d.m.Y H:i' }}</div>
+                    <div class="timeline-content">
+                        <div>{{ item.get_new_status_display }}</div>
+                        <div class="muted">{{ item.changed_by.get_full_name|default:item.changed_by.username|default:'—' }}</div>
+                        {% if item.comment %}<div>{{ item.comment }}</div>{% endif %}
+                    </div>
+                </div>
+            {% empty %}
+                <div class="muted">История статусов отсутствует.</div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+<section class="panel">
+    <div class="panel-header">Связанные взаимодействия</div>
+    <div class="table-wrap">
+        <table>
+            <thead><tr><th>Дата</th><th>Тип</th><th>Тема</th><th>Автор</th></tr></thead>
+            <tbody>
+                {% for item in object.interactions.all %}
+                    <tr>
+                        <td>{{ item.interaction_date|date:'d.m.Y' }}</td>
+                        <td>{{ item.get_interaction_type_display }}</td>
+                        <td>{{ item.subject }}</td>
+                        <td>{{ item.created_by.get_full_name|default:item.created_by.username }}</td>
+                    </tr>
+                {% empty %}
+                    <tr><td colspan="4">Взаимодействия отсутствуют.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</section>
+{% endblock %}
