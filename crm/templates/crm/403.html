@@ -1,0 +1,12 @@
+{% extends 'crm/base.html' %}
+{% block title %}Доступ запрещен{% endblock %}
+{% block page_title %}Доступ запрещен{% endblock %}
+{% block content %}
+<section class="panel narrow-panel">
+    <div class="panel-header">Недостаточно прав</div>
+    <p class="muted">У вашей учетной записи нет прав для выполнения данной операции.</p>
+    <div class="form-actions">
+        <a class="btn btn-primary" href="{% url 'dashboard' %}">На главную</a>
+    </div>
+</section>
+{% endblock %}

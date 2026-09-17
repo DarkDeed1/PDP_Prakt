@@ -3,6 +3,8 @@ from django.urls import include, path
 
 from crm.views import CRMLoginView, logout_view
 
+handler403 = 'crm.views.handler_permission_denied'
+
 admin.site.site_header = 'АС «Клиенты и сделки» — ЧОУВО «МУ им. С.Ю. Витте»'
 admin.site.site_title = 'Администрирование АС «Клиенты и сделки»'
 admin.site.index_title = 'Панель администрирования'

@@ -6,7 +6,7 @@ from django.contrib.auth import views as auth_views
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import Group, User
 from django.db.models import Count, Q, Sum
-from django.shortcuts import get_object_or_404, redirect
+from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse_lazy
 from django.utils import timezone
 from django.views.generic import CreateView, DeleteView, DetailView, ListView, TemplateView, UpdateView
@@ -16,6 +16,10 @@ from .forms import CounterpartyForm, DealForm, InteractionForm, UserCreateForm, 
 from .mixins import AdminOnlyMixin, BusinessReadMixin, BusinessWriteMixin
 from .models import AuditLog, Counterparty, Deal, Interaction
 from .utils import create_status_history, ensure_roles_exist, get_user_role, write_audit_log
+
+
+def handler_permission_denied(request, exception=None):
+    return render(request, 'crm/403.html', status=403)
 
 
 class BaseFilteredListView(ListView):
